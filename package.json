@@ -1,0 +1,23 @@
+{
+  "name": "furniture-multiview",
+  "version": "1.0.0",
+  "description": "furniture 3d object format to multiview",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ParkEunwoo/furniture-multiview.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ParkEunwoo/furniture-multiview/issues"
+  },
+  "homepage": "https://github.com/ParkEunwoo/furniture-multiview#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
