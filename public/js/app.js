@@ -7,6 +7,7 @@ function handleFiles() {
   const reader = new FileReader();
   reader.onload = (function() {
     return function(e) {
+      console.log(performance.now());
       loadObjLoader(e.target.result);
     };
   })();
@@ -14,6 +15,13 @@ function handleFiles() {
 }
 
 const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, 4 / 3, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  preserveDrawingBuffer: true
+});
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const loader = new THREE.OBJLoader();
 
 initThree();
 addDirectionalLight();
@@ -28,16 +36,12 @@ function addDirectionalLight() {
 }
 
 function initThree() {
-  const camera = new THREE.PerspectiveCamera(75, 4 / 3, 0.1, 1000);
-
-  let renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    preserveDrawingBuffer: true
-  });
   renderer.setSize(800, 600);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  document.body.appendChild(renderer.domElement);
+  document
+    .querySelector("main")
+    .insertAdjacentElement("afterbegin", renderer.domElement);
 
   let axes = new THREE.AxesHelper(10);
   scene.add(axes);
@@ -46,7 +50,6 @@ function initThree() {
   camera.position.y = 13;
   camera.position.z = 13;
 
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.rotateSpeed = 0.1;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 0.8;
@@ -54,30 +57,34 @@ function initThree() {
   controls.maxDistance = 100;
 
   // 캡쳐 renderer.domElement.toDataURL();
-
-  function animate() {
-    requestAnimationFrame(animate);
-    let speed = Date.now() * 0.00025;
-    camera.position.x = Math.cos(speed) * 27;
-    camera.position.z = Math.sin(speed) * 27;
-    renderer.render(scene, camera);
-    controls.update();
-  }
-
-  animate();
+}
+function animate() {
+  requestAnimationFrame(animate);
+  let speed = Date.now() * 0.00025;
+  camera.position.x = Math.cos(speed) * 27;
+  camera.position.z = Math.sin(speed) * 27;
+  renderer.render(scene, camera);
+  controls.update();
 }
 
 function loadObjLoader(file) {
-  const loader = new THREE.OBJLoader();
   loader.load(
-    file,
+    "./../model/chair.obj",
     function(object) {
       // 모델 로드가 완료되었을때 호출되는 함수
+      console.log(performance.now());
       object.scale.x = 0.1;
       object.scale.y = 0.1;
       object.scale.z = 0.1;
-      console.log(object);
       scene.add(object);
+      const sizeInput = document.getElementById("size");
+      sizeInput.addEventListener("input", setObjectSize, false);
+      function setObjectSize(e) {
+        object.scale.x = e.target.value;
+        object.scale.y = e.target.value;
+        object.scale.z = e.target.value;
+      }
+      animate();
     },
     function(xhr) {
       // 모델이 로드되는 동안 호출되는 함수
