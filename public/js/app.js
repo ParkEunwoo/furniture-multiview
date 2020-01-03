@@ -1,5 +1,8 @@
 const objInput = document.getElementById("input");
 const imageInput = document.getElementById("image");
+const form = document.querySelector("form");
+
+form.addEventListener("submit", handleSubmit, false);
 
 objInput.addEventListener("change", handleFiles, false);
 imageInput.addEventListener("change", handleImages, false);
@@ -36,11 +39,7 @@ initThree();
 addDirectionalLight();
 
 function addDirectionalLight() {
-  const light = new THREE.DirectionalLight(0xffffff, 1);
-  light.castShadow = true;
-  light.position.x = 5;
-  light.position.y = 5;
-  light.position.z = 5;
+  const light = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
   scene.add(light);
 }
 
@@ -52,9 +51,6 @@ function initThree() {
     .querySelector("main")
     .insertAdjacentElement("afterbegin", renderer.domElement);
 
-  let axes = new THREE.AxesHelper(10);
-  scene.add(axes);
-
   camera.position.x = 27;
   camera.position.y = 13;
   camera.position.z = 13;
@@ -64,12 +60,11 @@ function initThree() {
   controls.panSpeed = 0.8;
   controls.minDistance = 5;
   controls.maxDistance = 100;
-
-  // 캡쳐 renderer.domElement.toDataURL();
 }
+let speed = 500;
 function animate() {
-  requestAnimationFrame(animate);
-  let speed = Date.now() * 0.00025;
+  rqamf = requestAnimationFrame(animate);
+  speed += 0.01;
   camera.position.x = Math.cos(speed) * 27;
   camera.position.z = Math.sin(speed) * 27;
   renderer.render(scene, camera);
@@ -103,4 +98,21 @@ function loadObjLoader(file) {
       alert("모델을 로드 중 오류가 발생하였습니다.");
     }
   );
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+  cancelAnimationFrame(rqamf);
+  const multiview = Array(12)
+    .fill(0)
+    .map((v, i) => {
+      camera.position.x = Math.cos((Math.PI * i) / 12) * 27;
+      camera.position.z = Math.sin((Math.PI * i) / 12) * 27;
+      controls.update();
+      renderer.render(scene, camera);
+      return renderer.domElement.toDataURL();
+    });
+  Promise.all(multiview).then(v => {
+    console.log(multiview);
+  });
 }
