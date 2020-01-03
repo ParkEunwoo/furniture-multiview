@@ -3,7 +3,7 @@ const inputElement = document.getElementById("input");
 inputElement.addEventListener("change", handleFiles, false);
 
 function handleFiles() {
-  const [file] = this.files; /* 이제 파일 리스트로 작업할 수 있습니다 */
+  const [file] = this.files;
   const reader = new FileReader();
   reader.onload = (function() {
     return function(e) {
@@ -13,17 +13,13 @@ function handleFiles() {
   reader.readAsDataURL(file);
 }
 
-let scene = new THREE.Scene();
-let light;
-let camera;
-let loader; // OBJLoader 객체를 넣을 변수를 선언합니다.
+const scene = new THREE.Scene();
 
 initThree();
 addDirectionalLight();
-// loadObjLoader("./../model/chair.obj");
 
 function addDirectionalLight() {
-  light = new THREE.DirectionalLight(0xffffff, 1);
+  const light = new THREE.DirectionalLight(0xffffff, 1);
   light.castShadow = true;
   light.position.x = 5;
   light.position.y = 5;
@@ -32,22 +28,18 @@ function addDirectionalLight() {
 }
 
 function initThree() {
-  camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
+  const camera = new THREE.PerspectiveCamera(75, 4 / 3, 0.1, 1000);
 
   let renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    preserveDrawingBuffer: true
   });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(800, 600);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   document.body.appendChild(renderer.domElement);
 
-  let axes = new THREE.AxisHelper(10);
+  let axes = new THREE.AxesHelper(10);
   scene.add(axes);
 
   camera.position.x = 27;
@@ -55,15 +47,19 @@ function initThree() {
   camera.position.z = 13;
 
   controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.rotateSpeed = 1.0;
+  controls.rotateSpeed = 0.1;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 0.8;
   controls.minDistance = 5;
   controls.maxDistance = 100;
 
+  // 캡쳐 renderer.domElement.toDataURL();
+
   function animate() {
     requestAnimationFrame(animate);
-
+    let speed = Date.now() * 0.00025;
+    camera.position.x = Math.cos(speed) * 27;
+    camera.position.z = Math.sin(speed) * 27;
     renderer.render(scene, camera);
     controls.update();
   }
@@ -72,7 +68,7 @@ function initThree() {
 }
 
 function loadObjLoader(file) {
-  loader = new THREE.OBJLoader();
+  const loader = new THREE.OBJLoader();
   loader.load(
     file,
     function(object) {
