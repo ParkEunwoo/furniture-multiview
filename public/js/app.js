@@ -1,15 +1,24 @@
-const inputElement = document.getElementById("input");
+const objInput = document.getElementById("input");
+const imageInput = document.getElementById("image");
 
-inputElement.addEventListener("change", handleFiles, false);
+objInput.addEventListener("change", handleFiles, false);
+imageInput.addEventListener("change", handleImages, false);
 
 function handleFiles() {
   const [file] = this.files;
   const reader = new FileReader();
   reader.onload = (function() {
     return function(e) {
-      console.log(performance.now());
       loadObjLoader(e.target.result);
     };
+  })();
+  reader.readAsDataURL(file);
+}
+function handleImages() {
+  const [file] = this.files;
+  const reader = new FileReader();
+  reader.onload = (function() {
+    return function(e) {};
   })();
   reader.readAsDataURL(file);
 }
@@ -69,10 +78,9 @@ function animate() {
 
 function loadObjLoader(file) {
   loader.load(
-    "./../model/chair.obj",
+    file,
     function(object) {
       // 모델 로드가 완료되었을때 호출되는 함수
-      console.log(performance.now());
       object.scale.x = 0.1;
       object.scale.y = 0.1;
       object.scale.z = 0.1;
