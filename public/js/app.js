@@ -1,4 +1,5 @@
-const objInput = document.getElementById("input");
+const objInput = document.getElementById("object");
+const mtlInput = document.getElementById("material");
 const imageInput = document.getElementById("image");
 const hidden = document.getElementById("hidden");
 const submit = document.getElementById("submit");
@@ -6,7 +7,8 @@ const classification = document.getElementById("class");
 
 submit.addEventListener("click", handleSubmit, false);
 
-objInput.addEventListener("change", handleFiles, false);
+objInput.addEventListener("change", handleObj, false);
+mtlInput.addEventListener("change", handleMtl, false);
 imageInput.addEventListener("change", handleImages, false);
 classification.addEventListener("change", handleClass, false);
 
@@ -14,16 +16,28 @@ function handleClass() {
   document.forms[0].setAttribute("action", `/upload/${this.value}`);
 }
 
-function handleFiles() {
+function handleObj() {
   const [file] = this.files;
   const reader = new FileReader();
   reader.onload = (function() {
     return function(e) {
-      loadFBXLoader(e.target.result);
+      loadOBJLoader(e.target.result);
     };
   })();
   reader.readAsDataURL(file);
 }
+
+function handleMtl() {
+  const [file] = this.files;
+  const reader = new FileReader();
+  reader.onload = (function() {
+    return function(e) {
+      loadMTLLoader(e.target.result);
+    };
+  })();
+  reader.readAsDataURL(file);
+}
+
 function handleImages() {
   const [file] = this.files;
   const reader = new FileReader();
@@ -34,18 +48,19 @@ function handleImages() {
 }
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, 4 / 3, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(45, 4 / 3, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
   preserveDrawingBuffer: true
 });
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-const loader = new THREE.FBXLoader();
+const objLoader = new THREE.OBJLoader();
+const mtlLoader = new THREE.MTLLoader();
 
 initThree();
-addDirectionalLight();
+addHemisphereLight();
 
-function addDirectionalLight() {
+function addHemisphereLight() {
   const light = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
   console.log(light);
   const lightInput = document.getElementById("light");
@@ -84,8 +99,8 @@ function animate() {
   controls.update();
 }
 
-function loadFBXLoader(file) {
-  loader.load(
+function loadOBJLoader(file) {
+  objLoader.load(
     file,
     function(object) {
       // 모델 로드가 완료되었을때 호출되는 함수
@@ -102,6 +117,26 @@ function loadFBXLoader(file) {
         object.scale.z = e.target.value;
       }
       animate();
+    },
+    function(xhr) {
+      // 모델이 로드되는 동안 호출되는 함수
+      console.log((xhr.loaded / xhr.total) * 100, "% loaded");
+    },
+    function(error) {
+      // 모델 로드가 실패했을 때 호출하는 함수
+      alert("모델을 로드 중 오류가 발생하였습니다.");
+    }
+  );
+}
+
+function loadMTLLoader(file) {
+  mtlLoader.load(
+    file,
+    function(materials) {
+      // 모델 로드가 완료되었을때 호출되는 함수
+      materials.preload();
+      objLoader.setMaterials(materials);
+      console.log(materials);
     },
     function(xhr) {
       // 모델이 로드되는 동안 호출되는 함수
@@ -149,7 +184,8 @@ function handleSubmit(e) {
     fetch("/upload/" + classification.value, {
       method: "POST",
       body: formData
+    }).then(res => {
+      location.reload();
     });
   });
-  return false;
 }

@@ -17,10 +17,10 @@ const storage = multer.diskStorage({
     if (Number(name) < 12) {
       callback(null, `${id}-${name}.${ext}`);
     } else {
-      if (ext === "fbx") {
+      if (ext === "obj" || ext === "mtl") {
         callback(null, `${id}.${ext}`);
       } else {
-        callback(null, `${id}-${req.files.length + 10}.${ext}`);
+        callback(null, `${id}-${req.files.length + 11}.${ext}`);
       }
     }
   }
