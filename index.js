@@ -10,10 +10,17 @@ const storage = multer.diskStorage({
     callback(null, "public/furniture/" + req.params.class);
   },
   filename: (req, file, callback) => {
-    callback(
-      null,
-      new Date().valueOf() + "." + file.originalname.split(".").pop()
-    );
+    const [name, ext] = file.originalname.split(".");
+    const id = "afdad";
+    if (Number(name) < 12) {
+      callback(null, `${id}-${name}.${ext}`);
+    } else {
+      if (ext === "obj") {
+        callback(null, `${id}.${ext}`);
+      } else {
+        callback(null, `${id}-${req.files.length + 10}.${ext}`);
+      }
+    }
   }
 });
 

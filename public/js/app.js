@@ -121,16 +121,21 @@ function handleSubmit(e) {
       return renderer.domElement.toDataURL();
     });
   Promise.all(multiview).then(result => {
-    result.forEach(img =>
+    result.forEach((img, index) =>
       formData.append(
         "files",
-        new Blob(
+        new File(
           [
-            new Uint8Array(
-              [...atob(img.split(",")[1])].map(blob => blob.charCodeAt(0))
+            new Blob(
+              [
+                new Uint8Array(
+                  [...atob(img.split(",")[1])].map(blob => blob.charCodeAt(0))
+                )
+              ],
+              { type: "image/jpeg" }
             )
           ],
-          { type: "image/jpg" }
+          `${index < 10 ? `0${index}` : index}.jpg`
         )
       )
     );
