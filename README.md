@@ -6,7 +6,7 @@ furniture 3d object format to multiview
 
 ## 화면 구성
 
-![snapshot](snapshot.jpg)
+![snapshot](snapshot.JPG)
 
 - 모델링, 애니메이션, 텍스쳐 정보를 포함한 fbx를 입력으로 받으면 검은 화면에 오브젝트가 생성됨
 - 오브젝트 크기와 밝기 조절가능
