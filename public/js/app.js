@@ -19,7 +19,7 @@ function handleFiles() {
   const reader = new FileReader();
   reader.onload = (function() {
     return function(e) {
-      loadObjLoader(e.target.result);
+      loadFBXLoader(e.target.result);
     };
   })();
   reader.readAsDataURL(file);
@@ -40,13 +40,19 @@ const renderer = new THREE.WebGLRenderer({
   preserveDrawingBuffer: true
 });
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-const loader = new THREE.OBJLoader();
+const loader = new THREE.FBXLoader();
 
 initThree();
 addDirectionalLight();
 
 function addDirectionalLight() {
   const light = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
+  console.log(light);
+  const lightInput = document.getElementById("light");
+  lightInput.addEventListener("input", setLight, false);
+  function setLight(e) {
+    light.intensity = e.target.value;
+  }
   scene.add(light);
 }
 
@@ -78,7 +84,7 @@ function animate() {
   controls.update();
 }
 
-function loadObjLoader(file) {
+function loadFBXLoader(file) {
   loader.load(
     file,
     function(object) {

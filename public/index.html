@@ -11,8 +11,8 @@
   <body>
     <form method="post" enctype="multipart/form-data">
       <label>
-        obj 파일 선택
-        <input name="files" id="input" type="file" accept=".obj" />
+        fbx 파일 선택
+        <input name="files" id="input" type="file" accept=".fbx" />
       </label>
       <label>
         jpg 파일 선택
@@ -32,9 +32,16 @@
         오브젝트 크기
         <input id="size" type="range" min="0" max="3" step="0.01" value="0.5" />
       </label>
+      <label>
+        밝기
+        <input id="light" type="range" min="0" max="3" step="0.01" value="1" />
+      </label>
     </div>
     <main></main>
     <script src="js/three.js"></script>
+    <script src="js/inflate.min.js"></script>
+    <script src="js/FBXLoader.js"></script>
+    <script src="js/MTLLoader.js"></script>
     <script src="js/OBJLoader.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/app.js"></script>
