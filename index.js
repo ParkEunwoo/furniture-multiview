@@ -21,7 +21,9 @@ const upload = multer({ storage }).array("files", 30);
 
 app.post("/upload/:class", upload, function(req, res) {
   const { files } = req;
-  res.send(files);
+  console.log(req.params.class);
+  console.log(files);
+  res.redirect("/");
 });
 
 app.listen(3000, () => {

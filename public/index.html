@@ -9,23 +9,23 @@
     <title>Furniture-Multiview</title>
   </head>
   <body>
-    <form>
+    <form method="post" enctype="multipart/form-data">
       <label>
         obj 파일 선택
-        <input id="input" type="file" />
+        <input name="files" id="input" type="file" accept=".obj" />
       </label>
       <label>
         jpg 파일 선택
-        <input id="image" type="file" multiple="multiple" />
+        <input name="files" id="image" type="file" multiple="multiple" />
       </label>
-      <select name="job">
+      <select id="class">
         <option value="">가구선택</option>
         <option value="chair">chair</option>
         <option value="bed">bed</option>
         <option value="table">table</option>
         <option value="sofa">sofa</option>
       </select>
-      <input type="submit" value="업로드" />
+      <input id="submit" type="button" value="업로드" />
     </form>
     <div id="control">
       <label>

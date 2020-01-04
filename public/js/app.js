@@ -1,11 +1,18 @@
 const objInput = document.getElementById("input");
 const imageInput = document.getElementById("image");
-const form = document.querySelector("form");
+const hidden = document.getElementById("hidden");
+const submit = document.getElementById("submit");
+const classification = document.getElementById("class");
 
-form.addEventListener("submit", handleSubmit, false);
+submit.addEventListener("click", handleSubmit, false);
 
 objInput.addEventListener("change", handleFiles, false);
 imageInput.addEventListener("change", handleImages, false);
+classification.addEventListener("change", handleClass, false);
+
+function handleClass() {
+  document.forms[0].setAttribute("action", `/upload/${this.value}`);
+}
 
 function handleFiles() {
   const [file] = this.files;
@@ -102,6 +109,7 @@ function loadObjLoader(file) {
 
 function handleSubmit(e) {
   e.preventDefault();
+  const formData = new FormData(document.forms[0]);
   cancelAnimationFrame(rqamf);
   const multiview = Array(12)
     .fill(0)
@@ -112,7 +120,24 @@ function handleSubmit(e) {
       renderer.render(scene, camera);
       return renderer.domElement.toDataURL();
     });
-  Promise.all(multiview).then(v => {
-    console.log(multiview);
+  Promise.all(multiview).then(result => {
+    result.forEach(img =>
+      formData.append(
+        "files",
+        new Blob(
+          [
+            new Uint8Array(
+              [...atob(img.split(",")[1])].map(blob => blob.charCodeAt(0))
+            )
+          ],
+          { type: "image/jpg" }
+        )
+      )
+    );
+    fetch("/upload/" + classification.value, {
+      method: "POST",
+      body: formData
+    });
   });
+  return false;
 }
