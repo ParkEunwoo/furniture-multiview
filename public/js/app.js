@@ -36,6 +36,8 @@ function handleMtl() {
     };
   })();
   reader.readAsDataURL(file);
+  document.querySelector(".mtl").style.display = "none";
+  document.querySelector(".obj").style.display = "inline";
 }
 
 function handleImages() {

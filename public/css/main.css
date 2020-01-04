@@ -5,3 +5,7 @@ body {
 #control {
   padding: 0.6em 0;
 }
+
+.obj {
+  display: none;
+}
