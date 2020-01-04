@@ -59,7 +59,7 @@ function initThree() {
     .insertAdjacentElement("afterbegin", renderer.domElement);
 
   camera.position.x = 27;
-  camera.position.y = 13;
+  camera.position.y = 30;
   camera.position.z = 13;
 
   controls.rotateSpeed = 0.1;
@@ -72,8 +72,8 @@ let speed = 500;
 function animate() {
   rqamf = requestAnimationFrame(animate);
   speed += 0.01;
-  camera.position.x = Math.cos(speed) * 27;
-  camera.position.z = Math.sin(speed) * 27;
+  camera.position.x = Math.cos(speed) * 30;
+  camera.position.z = Math.sin(speed) * 30;
   renderer.render(scene, camera);
   controls.update();
 }
@@ -83,9 +83,10 @@ function loadObjLoader(file) {
     file,
     function(object) {
       // 모델 로드가 완료되었을때 호출되는 함수
-      object.scale.x = 0.1;
-      object.scale.y = 0.1;
-      object.scale.z = 0.1;
+      object.scale.x = 0.5;
+      object.scale.y = 0.5;
+      object.scale.z = 0.5;
+      console.log(object);
       scene.add(object);
       const sizeInput = document.getElementById("size");
       sizeInput.addEventListener("input", setObjectSize, false);
